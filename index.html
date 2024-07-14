@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Password Strength Checker</title>
+  <style>
+    /* Optional CSS for styling the strength meter */
+    .strength-meter {
+      width: 100%;
+      height: 10px;
+      background-color: #dd5;
+      border-radius : 5px;
+    }
+
+    .strength-meter .strength {
+      height: 100%;
+      background-color: #00d1b2;
+      transition: all 0.2s ease-in-out;
+      border-radius: 5px 0 0 5px;
+    }
+  </style>
+</head>
+<body> 
+  <h1>Password Strength Checker</h1>
+  <div class="password-container">
+    <input type="password" id="password" placeholder="Enter Password">
+    <i id="show-password" class="fa fa-eye-slash"></i>
+  </div>
+  <div class="strength-meter">
+    <div class="strength"></div>
+  </div>
+  <p id="strength-message"></p>
+  <script>
+  const passwordInput = document.getElementById('password');
+  const showPasswordButton = document.getElementById('show-password');
+  const strengthMeter = document.querySelector('.strength-meter .strength');
+  const strengthMessage = document.getElementById('strength-message');
+
+  // Toggle password visibility
+  showPasswordButton.addEventListener('click', function() {
+    if (passwordInput.type === 'password') {
+      passwordInput.type = 'text';
+      showPasswordButton.classList.remove('fa-eye-slash');
+      showPasswordButton.classList.add('fa-eye');
+    } else {
+      passwordInput.type = 'password';
+      showPasswordButton.classList.remove('fa-eye');
+      showPasswordButton.classList.add('fa-eye-slash');
+    }
+  });
+
+  // Update strength meter on password change
+  passwordInput.addEventListener('keyup', function() {
+    const password = passwordInput.value;
+    const strength = calculateStrength(password);
+    strengthMeter.style.width = `${strength * 100}%`;
+    updateStrengthMessage(strength);
+  });
+
+  // Function to calculate password strength
+  function calculateStrength(password) {
+    let score = 0;
+    if (password.length >= 8) score++;
+    if (/[a-z]/.test(password)) score++;
+    if (/[A-Z]/.test(password)) score++;
+    if (/[0-9]/.test(password)) score++;
+    if (/[!@#$%^&*]/.test(password)) score++;
+    return score / 5;
+  }
+
+  // Function to update strength message
+  function updateStrengthMessage(strength) {
+    let message = '';
+    if (strength <= 0.2) {
+      message = 'Very Weak';
+    } else if (strength <= 0.4) {
+      message = 'Weak';
+    } else if (strength <= 0.6) {
+      message = 'Moderate';
+    } else if (strength <= 0.8) {
+      message = 'Strong';
+    } else {
+      message = 'Very Strong';
+    }
+    strengthMessage.textContent = `Password Strength: ${message}`;
+  }
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+</body>
+</html>
